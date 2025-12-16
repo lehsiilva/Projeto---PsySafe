@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsySafe Demo Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        .demo-toggle { background-color: #007bff; color: white; border: none; border-radius: 4px; }
+        .demo-toggle:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>🎭 PsySafe Demo Mode Test</h1>
+
+    <div class="test-section info">
+        <h2>📋 Instructions</h2>
+        <ol>
+            <li>Open the main app at: <a href="http://localhost:5173" target="_blank">http://localhost:5173</a></li>
+            <li>Check if you see "Demo Mode" toggle on the dashboard</li>
+            <li>Try switching between "Gestor" and "Funcionário" roles</li>
+            <li>Verify that the UI changes based on the selected role</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 LocalStorage Controls</h2>
+        <p>Use these buttons to test different user states:</p>
+        <button onclick="createDemoUser('gestor')" class="demo-toggle">Create Gestor User</button>
+        <button onclick="createDemoUser('funcionario')" class="demo-toggle">Create Funcionário User</button>
+        <button onclick="clearStorage()" class="demo-toggle">Clear Storage</button>
+        <button onclick="checkStorage()" class="demo-toggle">Check Storage</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Environment Check</h2>
+        <div id="env-status">Checking environment...</div>
+    </div>
+
+    <script>
+        // Check environment variable
+        fetch('/src/env.d.ts')
+            .then(response => response.text())
+            .then(text => {
+                const isDemoMode = text.includes('VITE_DEMO_MODE');
+                document.getElementById('env-status').innerHTML =
+                    `<div class="${isDemoMode ? 'success' : 'info'}">
+                        ${isDemoMode ? '✅ Demo mode ENABLED' : '❌ Demo mode DISABLED'}<br>
+                        <small>Environment: ${isDemoMode ? 'Development with demo features' : 'Production mode'}</small>
+                    </div>`;
+            })
+            .catch(() => {
+                document.getElementById('env-status').innerHTML =
+                    '<div class="info">⚠️ Could not check environment status</div>';
+            });
+
+        // Demo user creation functions
+        function createDemoUser(role) {
+            const demoUser = {
+                id: 'demo-user-123',
+                name: 'Usuário Demo',
+                email: 'demo@psysafe.com',
+                role: role
+            };
+            const demoToken = 'demo-jwt-token-12345';
+
+            localStorage.setItem('authToken', demoToken);
+            localStorage.setItem('user', JSON.stringify(demoUser));
+
+            alert(`✅ Created ${role} user!\n\nRefresh the page to see changes.`);
+            console.log('🎭 Demo user created:', demoUser);
+        }
+
+        function clearStorage() {
+            localStorage.clear();
+            alert('🗑️ Storage cleared!\n\nRefresh the page to start fresh.');
+            console.log('🗑️ localStorage cleared');
+        }
+
+        function checkStorage() {
+            const token = localStorage.getItem('authToken');
+            const userStr = localStorage.getItem('user');
+
+            let user = null;
+            try {
+                user = JSON.parse(userStr);
+            } catch (e) {
+                console.error('Error parsing user data:', e);
+            }
+
+            const info = `
+🔍 Storage Status:
+• Token: ${token ? '✅ Present' : '❌ Missing'}
+• User: ${user ? '✅ Present' : '❌ Missing'}
+• Role: ${user?.role || 'Not set'}
+• Name: ${user?.name || 'Not set'}
+            `;
+
+            alert(info);
+            console.log('Storage check:', { token, user });
+        }
+    </script>
+</body>
+</html>
+

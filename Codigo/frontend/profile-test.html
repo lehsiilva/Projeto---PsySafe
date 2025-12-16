@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Role Switcher Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        .role-switcher { background-color: #007bff; color: white; border: none; border-radius: 4px; }
+        .role-switcher:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>🎭 Profile Role Switcher Test</h1>
+
+    <div class="test-section info">
+        <h2>📋 Instructions</h2>
+        <ol>
+            <li>Open the main app at: <a href="http://localhost:5173" target="_blank">http://localhost:5173</a></li>
+            <li>Navigate to the Profile page (👤 Perfil in the sidebar)</li>
+            <li>Look for the blue "🎭 Demo Mode - Trocar Papel" card</li>
+            <li>Click the "Trocar" button to switch between Gestor and Funcionário</li>
+            <li>Navigate to different pages to see the role-based content change</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 LocalStorage Controls</h2>
+        <p>Use these buttons to test different user states:</p>
+        <button onclick="createGestorUser()" class="role-switcher">Create Gestor User</button>
+        <button onclick="createFuncionarioUser()" class="role-switcher">Create Funcionário User</button>
+        <button onclick="clearStorage()" class="role-switcher">Clear Storage</button>
+        <button onclick="checkStorage()" class="role-switcher">Check Storage</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Expected Behavior</h2>
+        <div class="test-section">
+            <h3>👨‍💼 <strong>Gestor (Manager)</strong></h3>
+            <ul>
+                <li><strong>Profile:</strong> Ana Carolina, Diretora de RH</li>
+                <li><strong>Dashboard:</strong> Shows organizational overview, scheduling options</li>
+                <li><strong>Questionários:</strong> Can schedule and manage questionnaires</li>
+                <li><strong>Estatísticas:</strong> Shows company-wide statistics</li>
+            </ul>
+        </div>
+        <div class="test-section">
+            <h3>👨‍💻 <strong>Funcionário (Employee)</strong></h3>
+            <ul>
+                <li><strong>Profile:</strong> Carlos Eduardo, Analista de TI</li>
+                <li><strong>Dashboard:</strong> Shows personal tasks and pending questionnaires</li>
+                <li><strong>Questionários:</strong> Can answer assigned questionnaires</li>
+                <li><strong>Estatísticas:</strong> Shows personal statistics and history</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎯 Role Profiles</h2>
+        <div class="test-section">
+            <h3>👨‍💼 Ana Carolina (Gestor)</h3>
+            <ul>
+                <li><strong>Email:</strong> ana.carolina@empresa.com</li>
+                <li><strong>Cargo:</strong> Diretora de RH</li>
+                <li><strong>Departamento:</strong> Recursos Humanos</li>
+                <li><strong>Admissão:</strong> March 15, 2018</li>
+            </ul>
+        </div>
+        <div class="test-section">
+            <h3>👨‍💻 Carlos Eduardo (Funcionário)</h3>
+            <ul>
+                <li><strong>Email:</strong> carlos.eduardo@empresa.com</li>
+                <li><strong>Cargo:</strong> Analista de TI</li>
+                <li><strong>Departamento:</strong> Tecnologia da Informação</li>
+                <li><strong>Admissão:</strong> July 10, 2022</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Demo user creation functions
+        function createGestorUser() {
+            const gestorUser = {
+                id: 'gestor-user-123',
+                name: 'Ana Carolina',
+                email: 'ana.carolina@empresa.com',
+                role: 'gestor'
+            };
+            const demoToken = 'demo-jwt-token-12345';
+
+            localStorage.setItem('authToken', demoToken);
+            localStorage.setItem('user', JSON.stringify(gestorUser));
+
+            alert('✅ Created Gestor user!\n\n• Name: Ana Carolina\n• Role: Gestor\n• Email: ana.carolina@empresa.com\n\nRefresh the page to see changes.');
+            console.log('🎭 Gestor user created:', gestorUser);
+        }
+
+        function createFuncionarioUser() {
+            const funcionarioUser = {
+                id: 'funcionario-user-456',
+                name: 'Carlos Eduardo',
+                email: 'carlos.eduardo@empresa.com',
+                role: 'funcionario'
+            };
+            const demoToken = 'demo-jwt-token-12345';
+
+            localStorage.setItem('authToken', demoToken);
+            localStorage.setItem('user', JSON.stringify(funcionarioUser));
+
+            alert('✅ Created Funcionário user!\n\n• Name: Carlos Eduardo\n• Role: Funcionário\n• Email: carlos.eduardo@empresa.com\n\nRefresh the page to see changes.');
+            console.log('🎭 Funcionário user created:', funcionarioUser);
+        }
+
+        function clearStorage() {
+            localStorage.clear();
+            alert('🗑️ Storage cleared!\n\nRefresh the page to start fresh.');
+            console.log('🗑️ localStorage cleared');
+        }
+
+        function checkStorage() {
+            const token = localStorage.getItem('authToken');
+            const userStr = localStorage.getItem('user');
+
+            let user = null;
+            try {
+                user = JSON.parse(userStr);
+            } catch (e) {
+                console.error('Error parsing user data:', e);
+            }
+
+            const info = `
+🔍 Storage Status:
+• Token: ${token ? '✅ Present' : '❌ Missing'}
+• User: ${user ? '✅ Present' : '❌ Missing'}
+• Name: ${user?.name || 'Not set'}
+• Role: ${user?.role || 'Not set'}
+• Email: ${user?.email || 'Not set'}
+            `;
+
+            alert(info);
+            console.log('Storage check:', { token, user });
+        }
+    </script>
+</body>
+</html>
+

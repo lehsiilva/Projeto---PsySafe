@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsySafe - Teste de Conexão Backend</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .test-section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .test-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status.pending {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .status.success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status.error {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #5568d3;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #004085;
+        }
+        
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 Teste de Conexão Backend</h1>
+        <p class="subtitle">Verifique se o backend está rodando e acessível</p>
+        
+        <div class="info-box">
+            <strong>URL do Backend:</strong>
+            <span id="backend-url">http://localhost:8080</span>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">
+                1. Teste de Conectividade
+                <span class="status pending" id="status-1">Aguardando</span>
+            </div>
+            <div class="test-result" id="result-1">Clique em "Executar Testes" para começar</div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">
+                2. Teste de Endpoint de Login
+                <span class="status pending" id="status-2">Aguardando</span>
+            </div>
+            <div class="test-result" id="result-2">Aguardando teste anterior...</div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">
+                3. Teste de CORS
+                <span class="status pending" id="status-3">Aguardando</span>
+            </div>
+            <div class="test-result" id="result-3">Aguardando teste anterior...</div>
+        </div>
+        
+        <button id="run-tests" onclick="runTests()">Executar Testes</button>
+    </div>
+    
+    <script>
+        const BACKEND_URL = 'http://localhost:8080';
+        
+        function updateStatus(testNum, status, message) {
+            const statusEl = document.getElementById(`status-${testNum}`);
+            const resultEl = document.getElementById(`result-${testNum}`);
+            
+            statusEl.className = `status ${status}`;
+            statusEl.textContent = status === 'success' ? '✓ Sucesso' : status === 'error' ? '✗ Erro' : 'Testando...';
+            resultEl.innerHTML = `<pre>${message}</pre>`;
+        }
+        
+        async function test1_Connectivity() {
+            updateStatus(1, 'pending', 'Testando conectividade...');
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+                    method: 'OPTIONS',
+                });
+                
+                updateStatus(1, 'success', `✓ Backend está acessível!\nStatus: ${response.status}\nURL: ${BACKEND_URL}`);
+                return true;
+            } catch (error) {
+                updateStatus(1, 'error', `✗ Não foi possível conectar ao backend\n\nErro: ${error.message}\n\nVerifique se:\n1. O backend está rodando\n2. A URL está correta: ${BACKEND_URL}\n3. Não há firewall bloqueando`);
+                return false;
+            }
+        }
+        
+        async function test2_LoginEndpoint() {
+            updateStatus(2, 'pending', 'Testando endpoint de login...');
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'test@example.com',
+                        password: 'test123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.status === 200 || response.status === 401 || response.status === 403) {
+                    updateStatus(2, 'success', `✓ Endpoint de login está funcionando!\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}`);
+                    return true;
+                } else {
+                    updateStatus(2, 'error', `✗ Resposta inesperada do endpoint\n\nStatus: ${response.status}\nResposta: ${JSON.stringify(data, null, 2)}`);
+                    return false;
+                }
+            } catch (error) {
+                updateStatus(2, 'error', `✗ Erro ao testar endpoint de login\n\nErro: ${error.message}`);
+                return false;
+            }
+        }
+        
+        async function test3_CORS() {
+            updateStatus(3, 'pending', 'Testando configuração CORS...');
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'test@example.com',
+                        password: 'test123'
+                    })
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers'),
+                };
+                
+                updateStatus(3, 'success', `✓ CORS está configurado!\n\nHeaders CORS:\n${JSON.stringify(corsHeaders, null, 2)}`);
+                return true;
+            } catch (error) {
+                if (error.message.includes('CORS')) {
+                    updateStatus(3, 'error', `✗ Erro de CORS detectado\n\nErro: ${error.message}\n\nSolução:\nVerifique se o backend tem CORS configurado para permitir requisições de:\n- http://localhost:5173\n- http://localhost:3000`);
+                } else {
+                    updateStatus(3, 'error', `✗ Erro ao testar CORS\n\nErro: ${error.message}`);
+                }
+                return false;
+            }
+        }
+        
+        async function runTests() {
+            const button = document.getElementById('run-tests');
+            button.disabled = true;
+            button.textContent = 'Executando testes...';
+            
+            // Reset all statuses
+            for (let i = 1; i <= 3; i++) {
+                updateStatus(i, 'pending', 'Aguardando...');
+            }
+            
+            // Run tests sequentially
+            const test1 = await test1_Connectivity();
+            if (test1) {
+                const test2 = await test2_LoginEndpoint();
+                if (test2) {
+                    await test3_CORS();
+                }
+            }
+            
+            button.disabled = false;
+            button.textContent = 'Executar Testes Novamente';
+        }
+        
+        // Update backend URL display
+        document.getElementById('backend-url').textContent = BACKEND_URL;
+    </script>
+</body>
+</html>

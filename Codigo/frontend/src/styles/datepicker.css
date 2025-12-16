@@ -1,0 +1,88 @@
+/* Custom Air Datepicker Styles for PsySafe */
+
+.air-datepicker {
+  --adp-font-family: inherit;
+  --adp-color: #4a5568;
+  --adp-color-secondary: #718096;
+  --adp-accent-color: #10b981;
+  --adp-background-color: #ffffff;
+  --adp-background-color-hover: #f7fafc;
+  --adp-background-color-active: #10b981;
+  --adp-background-color-in-range: rgba(16, 185, 129, 0.1);
+  --adp-border-color: #e2e8f0;
+  --adp-border-color-inner: #e2e8f0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+}
+
+.air-datepicker-nav {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.75rem;
+}
+
+.air-datepicker-nav--title {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.air-datepicker-nav--action {
+  color: #10b981;
+}
+
+.air-datepicker-nav--action:hover {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.air-datepicker-body--day-name {
+  color: #718096;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.air-datepicker-cell {
+  border-radius: 0.5rem;
+}
+
+.air-datepicker-cell.-selected- {
+  background: #10b981;
+  color: white;
+  font-weight: 600;
+}
+
+.air-datepicker-cell.-selected-:hover {
+  background: #059669;
+}
+
+.air-datepicker-cell.-current- {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.air-datepicker-cell.-disabled- {
+  color: #cbd5e0;
+  cursor: not-allowed;
+}
+
+.air-datepicker-cell:hover:not(.-disabled-):not(.-selected-) {
+  background: #f0fdf4;
+  color: #059669;
+}
+
+.air-datepicker-buttons {
+  border-top: 1px solid #e2e8f0;
+  padding: 0.75rem;
+}
+
+.air-datepicker-button {
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.air-datepicker-button:hover {
+  background: #f0fdf4;
+  color: #059669;
+}
