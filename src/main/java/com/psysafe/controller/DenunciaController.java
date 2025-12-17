@@ -76,7 +76,7 @@ public class DenunciaController {
                     denuncia.setDenunciante(null); 
                 }
 
-                // 🔹 ESSENCIAL: Preenche idEmpresa do usuário logado (usado tanto para anônimas quanto identificadas)
+                // Preenche idEmpresa do usuário logado (usado tanto para anônimas quanto identificadas)
                 Integer idEmpresa = JwtUtil.getUserEmpresaId(token);
                 denuncia.setIdEmpresa(idEmpresa);
 
@@ -100,10 +100,6 @@ public class DenunciaController {
         }
     }
 
-    /**
-     * 🚧 CORREÇÃO CRÍTICA: Atualiza apenas o status 'resolvido' usando o método 
-     * dedicado do Service/DAO, evitando a duplicação (insert) da denúncia.
-     */
     private Object updateStatus(Request req, Response res) {
         res.type("application/json");
         int id;
@@ -132,10 +128,7 @@ public class DenunciaController {
         return d;
     }
 
-    /**
-     * 🔹 Lista denúncias recebidas. O filtro de visibilidade (TODAS de uma empresa) 
-     * é delegado ao service/DAO, usando o ID da empresa logada.
-     */
+    
     private Object getRecebidas(Request req, Response res) throws Exception {
         res.type("application/json");
         String authHeader = req.headers("Authorization");
