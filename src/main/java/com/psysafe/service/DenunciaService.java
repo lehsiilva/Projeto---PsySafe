@@ -31,7 +31,7 @@ public class DenunciaService {
                 .filter(d -> d.getDenunciante() != null)
                 .collect(Collectors.toList());
     }
-    
+
     
     public List<Denuncia> getDenunciasRecebidas(Integer idEmpresa) {
         if (idEmpresa == null) {
