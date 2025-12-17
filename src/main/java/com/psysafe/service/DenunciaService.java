@@ -32,10 +32,7 @@ public class DenunciaService {
                 .collect(Collectors.toList());
     }
     
-    /**
-     * ✅ CORRIGIDO: Usa o novo método do DAO para buscar TODAS as denúncias 
-     * (anônimas e não anônimas) para a empresa do gestor logado.
-     */
+    
     public List<Denuncia> getDenunciasRecebidas(Integer idEmpresa) {
         if (idEmpresa == null) {
             // Retorna lista vazia se o usuário não tiver empresa atribuída.
@@ -44,9 +41,7 @@ public class DenunciaService {
         return dao.getDenunciasPorEmpresa(idEmpresa);
     }
     
-    /**
-     * ✅ NOVO MÉTODO: Expõe a funcionalidade de atualizar apenas o status.
-     */
+    
     public void updateStatus(int id, boolean resolvido) {
         dao.updateStatus(id, resolvido);
     }
