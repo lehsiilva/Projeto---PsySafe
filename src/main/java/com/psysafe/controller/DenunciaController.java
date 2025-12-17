@@ -148,7 +148,6 @@ public class DenunciaController {
         // 2. Chama o service que agora busca TODAS as denúncias associadas àquele idEmpresa
         return service.getDenunciasRecebidas(idEmpresa);
     }
-
     // Classes de erro
     class Error {
         String message;
